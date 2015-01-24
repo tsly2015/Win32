@@ -3,6 +3,7 @@
 
 #include "stdafx.h"
 #include "Win32.h"
+#include <stdio.h>
 
 #define MAX_LOADSTRING 100
 
@@ -131,6 +132,17 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 	switch (message)
 	{
+	case WM_CHAR:
+		wchar_t szChar[20];
+		swprintf(szChar, 20, L"%d", wParam);
+		MessageBox(hWnd, szChar, L"Title", 0);
+		break;
+	case WM_LBUTTONDOWN:
+		MessageBox(hWnd, L"Clicked", L"Title", 0);
+		hdc = GetDC(hWnd);
+		TextOut(hdc, 0, 50, L"contents", strlen("contents"));
+		ReleaseDC(hWnd, hdc);
+		break;
 	case WM_COMMAND:
 		wmId    = LOWORD(wParam);
 		wmEvent = HIWORD(wParam);
@@ -150,7 +162,14 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	case WM_PAINT:
 		hdc = BeginPaint(hWnd, &ps);
 		// TODO: Add any drawing code here...
+		TextOut(hdc, 0, 0, L"PAINT Contents", strlen("PAINT Contents"));
 		EndPaint(hWnd, &ps);
+		//need release?
+		//ReleaseDC(hWnd, hdc);
+		break;
+	case WM_CLOSE:
+		if (IDYES == MessageBox(hWnd, L"Exit?", L"Title", MB_YESNO))
+			DestroyWindow(hWnd);
 		break;
 	case WM_DESTROY:
 		PostQuitMessage(0);
